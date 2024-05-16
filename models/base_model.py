@@ -26,7 +26,6 @@ class BaseModel:
         else:
             storage.new(self)
 
-
     def __str__(self):
         """Returns a string representation of the BaseModel class."""
         return "[{}] ({}) {}".format(
