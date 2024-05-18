@@ -4,7 +4,8 @@ from base_model import BaseModel
 
 
 class Amenity(BaseModel):
-    """The Amenity class inherits from BaseModel and defines attributes for an amenity."""
+    """The Amenity class inherits from BaseModel and defines \
+        attributes for an amenity."""
 
     def __init__(self, name=""):
         """Initializes a new instance of the Amenity class."""
