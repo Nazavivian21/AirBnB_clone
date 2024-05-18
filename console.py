@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 
+"""HBNB Console module"""
 import cmd
 import os
 from models.base_model import BaseModel
