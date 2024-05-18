@@ -77,7 +77,10 @@ class HBNBCommand(cmd.Cmd):
                 storage.save()
 
     def do_all(self, line):
-        """Display string representation of all instances based on the class name(optional)"""
+        """
+        Display string representation of all instances
+        based on the class name(optional)
+        """
         obj_list = []
         obj_dict = storage.all()
 
@@ -140,6 +143,7 @@ class HBNBCommand(cmd.Cmd):
         """End of file command to exit the program"""
         print("")
         return True
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
