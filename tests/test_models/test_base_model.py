@@ -2,11 +2,10 @@
 
 
 """BaseModel unittest module"""
-
-
 import unittest
 from models.base_model import BaseModel
 import datetime
+import json
 
 
 class TestBaseModel(unittest.TestCase):
@@ -21,7 +20,7 @@ class TestBaseModel(unittest.TestCase):
         self.base_obj = BaseModel()
         self.base_obj.name = "Benedict Abudu"
 
-    def TearDown(self):
+    def tearDown(self):
         """
         Removes the instance of the BaseModel class stored in the `base_obj`
         attribute. This method is called after each test case is run.
@@ -34,6 +33,10 @@ class TestBaseModel(unittest.TestCase):
         """
         self.assertIsInstance(self.base_obj, BaseModel)
         self.assertEqual("Benedict Abudu", self.base_obj.name)
+        self.assertTrue(hasattr(self.base_obj, 'id'))
+        self.assertTrue(hasattr(self.base_obj, 'created_at'))
+        self.assertTrue(hasattr(self.base_obj, 'updated_at'))
+        self.assertTrue(hasattr(self.base_obj, 'name'))
 
     def test_id(self):
         """
@@ -52,11 +55,18 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsNotNone(self.base_obj.updated_at)
         self.assertEqual("<class 'datetime.datetime'>",
                          str(type(self.base_obj.created_at)))
+        self.assertEqual("<class 'datetime.datetime'>",
+                         str(type(self.base_obj.updated_at)))
         self.assertEqual(self.base_obj.updated_at.year,
                          self.base_obj.created_at.year)
 
     def test_updated_created_diff(self):
+        """
+        Check if updated_at attribute changes after being saved
+        """
         self.base_obj.save()
+        self.assertEqual("<class 'datetime.datetime'>",
+                         str(type(self.base_obj.updated_at)))
         self.assertNotEqual(self.base_obj.updated_at, self.base_obj.created_at)
 
     def test_str(self):
@@ -89,3 +99,15 @@ class TestBaseModel(unittest.TestCase):
                         datetime.datetime))
         new_base_model_dict = new_base_model.to_dict()
         self.assertEqual(base_obj_dict, new_base_model_dict)
+
+    def test_serialization_deserialization(self):
+        """
+        Test serialization and deserialization of BaseModel instances.
+        """
+        base_obj_json = json.dumps(self.base_obj.to_dict())
+        deserialized_obj = BaseModel(**json.loads(base_obj_json))
+
+        self.assertEqual(deserialized_obj.id, self.base_obj.id)
+        self.assertEqual(deserialized_obj.created_at, self.base_obj.created_at)
+        self.assertEqual(deserialized_obj.updated_at, self.base_obj.updated_at)
+        self.assertEqual(deserialized_obj.name, self.base_obj.name)

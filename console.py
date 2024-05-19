@@ -41,26 +41,29 @@ class HBNBCommand(cmd.Cmd):
         """Display the string representation of an instance"""
         if not line:
             print("** class name missing **")
-            return
+            return False
 
         parts = line.split(" ", 1)
         clss = parts[0]
+
+        if clss not in self.__class_dict:
+            print("** class doesn't exist **")
+            return False
+
         try:
             clss_id = parts[1]
         except IndexError:
             print("** instance id missing **")
             return False
 
-        if clss not in self.__class_dict:
-            print("** class doesn't exist **")
-        else:
-            obj_key = "{}.{}".format(clss, clss_id)
-            objs = storage.all()
+        obj_key = "{}.{}".format(clss, clss_id)
+        objs = storage.all()
 
-            if obj_key not in objs:
-                print("** no instance found **")
-            else:
-                print(objs[obj_key])
+        if obj_key not in objs:
+            print("** no instance found **")
+            return False
+        else:
+            print(objs[obj_key])
 
     def do_destroy(self, line):
         """Delete an instance"""
@@ -70,21 +73,26 @@ class HBNBCommand(cmd.Cmd):
 
         parts = line.split(" ", 1)
         clss = parts[0]
-        clss_id = parts[1]
 
         if clss not in self.__class_dict:
             print("** class doesn't exist **")
-        elif not clss_id:
-            print("** instance id is missing **")
-        else:
-            obj_key = "{}.{}".format(clss, clss_id)
-            objs = storage.all()
+            return False
 
-            if obj_key not in objs:
-                print("** no instance found **")
-            else:
-                del objs[obj_key]
-                storage.save()
+        try:
+            clss_id = parts[1]
+        except IndexError:
+            print("** instance id missing **")
+            return False
+
+        obj_key = "{}.{}".format(clss, clss_id)
+        objs = storage.all()
+
+        if obj_key not in objs:
+            print("** no instance found **")
+            return False
+        else:
+            del objs[obj_key]
+            storage.save()
 
     def do_all(self, line):
         """
@@ -153,6 +161,54 @@ class HBNBCommand(cmd.Cmd):
         """End of file command to exit the program"""
         print("")
         return True
+
+    def default(self, line):
+        """Default command to handle unknown commands"""
+        if '.' in line:
+            parts = line.split('.')
+            if len(parts) != 2:
+                print("** Unknown command **")
+                return
+            clss_name = parts[0]
+            command = parts[1]
+
+            if clss_name not in self.__class_dict:
+                print("** class doesn't exist **")
+                return False
+
+            method = command.split('(')[0]
+            start_index = command.find('(') + 1
+            command_str = command[start_index:-1]
+            args = split(command_str)
+
+            if method == "all":
+                self.do_all(clss_name)
+
+            elif method == "count":
+                obj_dict = storage.all()
+                count = 0
+
+                for key in obj_dict:
+                    if clss_name == key.split(".")[0]:
+                        count += 1
+                print(count)
+            elif method == "show":
+                if len(args) != 1:
+                    print("** instance id missing **")
+                    return False
+                self.do_show(clss_name + " " + args[0])
+            elif method == "destroy":
+                if len(args) != 1:
+                    print("** instance id missing **")
+                    return False
+                self.do_destroy(clss_name + " " + args[0])
+            elif method == "update":
+                if len(command_str) == 0:
+                    print("** instance id missing **")
+                    return False
+                self.do_update(clss_name + " " + command_str)
+        else:
+            print("** Unknown command **")
 
 
 if __name__ == '__main__':
