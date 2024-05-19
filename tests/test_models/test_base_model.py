@@ -2,8 +2,6 @@
 
 
 """BaseModel unittest module"""
-
-
 import unittest
 from models.base_model import BaseModel
 import datetime
@@ -57,6 +55,8 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsNotNone(self.base_obj.updated_at)
         self.assertEqual("<class 'datetime.datetime'>",
                          str(type(self.base_obj.created_at)))
+        self.assertEqual("<class 'datetime.datetime'>",
+                         str(type(self.base_obj.updated_at)))
         self.assertEqual(self.base_obj.updated_at.year,
                          self.base_obj.created_at.year)
 
