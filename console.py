@@ -41,26 +41,29 @@ class HBNBCommand(cmd.Cmd):
         """Display the string representation of an instance"""
         if not line:
             print("** class name missing **")
-            return
+            return False
 
         parts = line.split(" ", 1)
         clss = parts[0]
+
+        if clss not in self.__class_dict:
+            print("** class doesn't exist **")
+            return False
+
         try:
             clss_id = parts[1]
         except IndexError:
             print("** instance id missing **")
             return False
 
-        if clss not in self.__class_dict:
-            print("** class doesn't exist **")
-        else:
-            obj_key = "{}.{}".format(clss, clss_id)
-            objs = storage.all()
+        obj_key = "{}.{}".format(clss, clss_id)
+        objs = storage.all()
 
-            if obj_key not in objs:
-                print("** no instance found **")
-            else:
-                print(objs[obj_key])
+        if obj_key not in objs:
+            print("** no instance found **")
+            return False
+        else:
+            print(objs[obj_key])
 
     def do_destroy(self, line):
         """Delete an instance"""
@@ -70,21 +73,26 @@ class HBNBCommand(cmd.Cmd):
 
         parts = line.split(" ", 1)
         clss = parts[0]
-        clss_id = parts[1]
 
         if clss not in self.__class_dict:
             print("** class doesn't exist **")
-        elif not clss_id:
-            print("** instance id is missing **")
-        else:
-            obj_key = "{}.{}".format(clss, clss_id)
-            objs = storage.all()
+            return False
 
-            if obj_key not in objs:
-                print("** no instance found **")
-            else:
-                del objs[obj_key]
-                storage.save()
+        try:
+            clss_id = parts[1]
+        except IndexError:
+            print("** instance id missing **")
+            return False
+
+        obj_key = "{}.{}".format(clss, clss_id)
+        objs = storage.all()
+
+        if obj_key not in objs:
+            print("** no instance found **")
+            return False
+        else:
+            del objs[obj_key]
+            storage.save()
 
     def do_all(self, line):
         """
@@ -201,6 +209,7 @@ class HBNBCommand(cmd.Cmd):
                 self.do_update(clss_name + " " + command_str)
         else:
             print("** Unknown command **")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
