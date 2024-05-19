@@ -1,65 +1,91 @@
 #!/usr/bin/python3
+
+
+"""BaseModel unittest module"""
+
+
 import unittest
-from datetime import datetime, timedelta
 from models.base_model import BaseModel
+import datetime
 
 
 class TestBaseModel(unittest.TestCase):
+    """ BaseModel unittest class"""
+
+    def setUp(self):
+        """
+        Initializes the TestBaseModel class by creating an instance of the
+        BaseModel class and assigning a name attribute to it.
+        This method is called before each test case is run
+        """
+        self.base_obj = BaseModel()
+        self.base_obj.name = "Benedict Abudu"
+
+    def TearDown(self):
+        """
+        Removes the instance of the BaseModel class stored in the `base_obj`
+        attribute. This method is called after each test case is run.
+        """
+        del self.base_obj
+
+    def test_instantiation(self):
+        """
+            Checks that an instance  is created.
+        """
+        self.assertIsInstance(self.base_obj, BaseModel)
+        self.assertEqual("Benedict Abudu", self.base_obj.name)
+
+    def test_id(self):
+        """
+            Checks the id of the instance.
+        """
+        self.assertIsNotNone(self.base_obj.id)
+        self.assertEqual("<class 'str'>", str(type(self.base_obj.id)))
+        new_model = BaseModel()
+        self.assertNotEqual(new_model.id, self.base_obj.id)
+
+    def test_updated_created_time(self):
+        """
+            Check the created_at and updated_at attributes.
+        """
+        self.assertIsNotNone(self.base_obj.created_at)
+        self.assertIsNotNone(self.base_obj.updated_at)
+        self.assertEqual("<class 'datetime.datetime'>",
+                         str(type(self.base_obj.created_at)))
+        self.assertEqual(self.base_obj.updated_at.year,
+                         self.base_obj.created_at.year)
+
+    def test_updated_created_diff(self):
+        self.base_obj.save()
+        self.assertNotEqual(self.base_obj.updated_at, self.base_obj.created_at)
+
+    def test_str(self):
+        """Test the string representation of the object"""
+        self.assertTrue(str(self.base_obj).startswith('[BaseModel]'))
+        self.assertIn(self.base_obj.id, str(self.base_obj))
+        self.assertIn(str(self.base_obj.__dict__), str(self.base_obj))
 
     def test_to_dict(self):
-        """Test converting a BaseModel instance to a dictionary"""
-        instance = BaseModel()
-        instance_dict = instance.to_dict()
-        self.assertEqual(instance_dict["__class__"], "BaseModel")
-        self.assertEqual(instance_dict["id"], instance.id)
-        self.assertEqual(
-            instance_dict["created_at"], instance.created_at.isoformat()
-        )
-        self.assertEqual(
-            instance_dict["updated_at"], instance.updated_at.isoformat()
-        )
+        """
+            Checks the to_dict method of the BaseModel class.
+        """
+        self.assertIsInstance(self.base_obj.to_dict(), dict)
+        self.assertEqual("BaseModel", (self.base_obj.to_dict())["__class__"])
+        self.assertEqual("<class 'str'>",
+                         str(type((self.base_obj.to_dict())["created_at"])))
+        self.assertEqual("<class 'str'>",
+                         str(type((self.base_obj.to_dict())["updated_at"])))
 
-    def test_from_dict(self):
-        """Test recreating a BaseModel instance from a dictionary"""
-        instance = BaseModel()
-        instance_dict = instance.to_dict()
-        recreated_instance = BaseModel(**instance_dict)
-        self.assertEqual(recreated_instance.__class__.__name__, "BaseModel")
-        self.assertEqual(recreated_instance.id, instance.id)
-        self.assertEqual(recreated_instance.created_at, instance.created_at)
-        self.assertEqual(recreated_instance.updated_at, instance.updated_at)
-
-    def test_custom_attributes(self):
-        """Test converting and recreating an instance with custom attributes"""
-        instance = BaseModel()
-        instance.custom_attribute = "value"
-        instance_dict = instance.to_dict()
-        recreated_instance = BaseModel(**instance_dict)
-        self.assertEqual(recreated_instance.custom_attribute, "value")
-
-    def test_datetime_attributes(self):
-        """Test converting and recreating an instance \
-              with datetime attributes"""
-        created_at = datetime.now()
-        updated_at = created_at + timedelta(days=1)
-        instance = BaseModel(
-            created_at=created_at.isoformat(),
-            updated_at=updated_at.isoformat(),
-        )
-        instance_dict = instance.to_dict()
-        recreated_instance = BaseModel(**instance_dict)
-        self.assertEqual(recreated_instance.created_at, created_at)
-        self.assertEqual(recreated_instance.updated_at, updated_at)
-
-    def test_custom_subclass(self):
-        """Test converting and recreating an instance of a custom subclass"""
-
-        class CustomModel(BaseModel):
-            """A custom subclass of BaseModel"""
-
-            pass
-
-        instance = CustomModel()
-        instance_dict = instance.to_dict()
-        recreated_instance = CustomModel(**instance_dict)
-        self.assertEqual(recreated_instance.__class__.__name__, "CustomModel")
+    def test_kwargs_instance_creation(self):
+        """
+            Checks that a new BaseModel instance is created using kwargs.
+        """
+        base_obj_dict = self.base_obj.to_dict()
+        new_base_model = BaseModel(**base_obj_dict)
+        self.assertEqual(new_base_model.id, self.base_obj.id)
+        self.assertTrue(isinstance(new_base_model.created_at,
+                        datetime.datetime))
+        self.assertTrue(isinstance(new_base_model.updated_at,
+                        datetime.datetime))
+        new_base_model_dict = new_base_model.to_dict()
+        self.assertEqual(base_obj_dict, new_base_model_dict)
