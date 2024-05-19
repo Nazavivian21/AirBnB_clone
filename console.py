@@ -12,7 +12,10 @@ from shlex import split as split
 class HBNBCommand(cmd.Cmd):
     """A class that handles the HBNB console."""
 
-    __class_dict = {'BaseModel': BaseModel}
+    __class_dict = {'BaseModel': BaseModel, 'User': User,
+                    'State': State, 'Amenity': Amenity,
+                    'Place': Place, 'City': City,
+                    'Review': Review}
 
     prompt = '(hbnb) '
 
