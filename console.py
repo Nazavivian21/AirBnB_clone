@@ -156,7 +156,51 @@ class HBNBCommand(cmd.Cmd):
 
     def default(self, line):
         """Default command to handle unknown commands"""
-        print("** Unknown command **")
+        if '.' in line:
+            parts = line.split('.')
+            if len(parts) != 2:
+                print("** Unknown command **")
+                return
+            clss_name = parts[0]
+            command = parts[1]
+
+            if clss_name not in self.__class_dict:
+                print("** class doesn't exist **")
+                return False
+
+            method = command.split('(')[0]
+            start_index = command.find('(') + 1
+            command_str = command[start_index:-1]
+            args = split(command_str)
+
+            if method == "all":
+                self.do_all(clss_name)
+
+            elif method == "count":
+                obj_dict = storage.all()
+                count = 0
+
+                for key in obj_dict:
+                    if clss_name == key.split(".")[0]:
+                        count += 1
+                print(count)
+            elif method == "show":
+                if len(args) != 1:
+                    print("** instance id missing **")
+                    return False
+                self.do_show(clss_name + " " + args[0])
+            elif method == "destroy":
+                if len(args) != 1:
+                    print("** instance id missing **")
+                    return False
+                self.do_destroy(clss_name + " " + args[0])
+            elif method == "update":
+                if len(command_str) == 0:
+                    print("** instance id missing **")
+                    return False
+                self.do_update(clss_name + " " + command_str)
+        else:
+            print("** Unknown command **")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
