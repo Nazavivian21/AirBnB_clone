@@ -61,8 +61,10 @@ class TestBaseModel(unittest.TestCase):
                          self.base_obj.created_at.year)
 
     def test_updated_created_diff(self):
+        """
+        Check if updated_at attribute changes after being saved
+        """
         self.base_obj.save()
-        self.assertTrue(hasattr(self.base_obj, 'updated_at'))
         self.assertEqual("<class 'datetime.datetime'>",
                          str(type(self.base_obj.updated_at)))
         self.assertNotEqual(self.base_obj.updated_at, self.base_obj.created_at)
