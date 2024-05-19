@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from uuid import uuid4
-from base_model import BaseModel
+from models.base_model import BaseModel
 
 
 class User(BaseModel):
