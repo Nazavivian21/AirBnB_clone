@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+
+"""User unittest module"""
 import unittest
 from datetime import datetime, timedelta
 from models.user import User
