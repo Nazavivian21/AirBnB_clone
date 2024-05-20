@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+"""City unittest module"""
 import unittest
 from models.city import City
 
