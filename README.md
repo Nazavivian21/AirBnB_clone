@@ -1,5 +1,4 @@
 # HBNB - The Console
----
 
 <br>
 
