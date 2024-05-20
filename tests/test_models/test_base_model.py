@@ -35,9 +35,15 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual("<class 'str'>", str(type(self.base_obj.id)))
         self.assertIsNotNone(self.base_obj.created_at)
         self.assertIsNotNone(self.base_obj.updated_at)
-        self.assertEqual("<class 'datetime.datetime'>", str(type(self.base_obj.created_at)))
-        self.assertEqual("<class 'datetime.datetime'>", str(type(self.base_obj.updated_at)))
-        self.assertEqual(self.base_obj.updated_at.year, self.base_obj.created_at.year)
+        self.assertEqual(
+            "<class 'datetime.datetime'>", str(type(self.base_obj.created_at))
+        )
+        self.assertEqual(
+            "<class 'datetime.datetime'>", str(type(self.base_obj.updated_at))
+        )
+        self.assertEqual(
+            self.base_obj.updated_at.year, self.base_obj.created_at.year
+        )
 
     def test_updated_at_on_save(self):
         """Test if updated_at attribute is updated on calling the save method"""
@@ -47,7 +53,9 @@ class TestBaseModel(unittest.TestCase):
 
     def test_str_representation(self):
         """Test the string representation of the BaseModel instance"""
-        expected_str = "[BaseModel] ({}) {}".format(self.base_obj.id, self.base_obj.__dict__)
+        expected_str = "[BaseModel] ({}) {}".format(
+            self.base_obj.id, self.base_obj.__dict__
+        )
         self.assertEqual(str(self.base_obj), expected_str)
 
     def test_to_dict(self):
@@ -67,8 +75,12 @@ class TestBaseModel(unittest.TestCase):
         base_obj_dict = self.base_obj.to_dict()
         new_base_model = BaseModel(**base_obj_dict)
         self.assertEqual(new_base_model.id, self.base_obj.id)
-        self.assertTrue(isinstance(new_base_model.created_at, datetime.datetime))
-        self.assertTrue(isinstance(new_base_model.updated_at, datetime.datetime))
+        self.assertTrue(
+            isinstance(new_base_model.created_at, datetime.datetime)
+        )
+        self.assertTrue(
+            isinstance(new_base_model.updated_at, datetime.datetime)
+        )
         new_base_model_dict = new_base_model.to_dict()
         self.assertEqual(base_obj_dict, new_base_model_dict)
 
