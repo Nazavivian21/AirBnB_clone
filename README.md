@@ -3,16 +3,10 @@
 <br>
 
 ## Table of Contents
-Description
-Repository Contents by Project Task
-Installation
-Usage
-Commands
-Models
-File Storage
-Testing
-Authors
-License
+	1. Description
+	2. Repository Contents by Project Task
+	3. Installation
+	4. Examples
 
 <br>
 
@@ -36,7 +30,7 @@ This repository serves as the initial phase of a student project aimed at replic
 <br>
 <br>
 
-### Installation
+<center> <h2>Installation</h2> </center>
 
 To get started with the Airbnb Clone CLI, follow these steps:
 
