@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+
+"""Place unittest module"""
 import unittest
 from models.place import Place
 
