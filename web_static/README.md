@@ -1,1 +1,1 @@
-I will be solving tasks on 0x01 AirBnB clone Web static in this directory
+This directory implements a webpage for the AirBnB clone program.
